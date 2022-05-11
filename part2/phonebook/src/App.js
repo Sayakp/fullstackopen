@@ -3,6 +3,7 @@ import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import phonebookService from "./services/Phonebook";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -10,6 +11,10 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [notification, setNotification] = useState({
+    message: null,
+    type: null,
+  });
 
   useEffect(() => {
     phonebookService
@@ -23,6 +28,11 @@ const App = () => {
       : persons.filter((person) =>
           person.name.toLowerCase().includes(filter.toLowerCase())
         );
+
+  const generateNotification = (notification) => {
+    setNotification(notification);
+    setTimeout(() => setNotification({ message: null, type: null }), 5000);
+  };
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
@@ -45,15 +55,25 @@ const App = () => {
           };
           phonebookService
             .update(oldEntry[0].id, newPerson)
-            .then((updatedPerson) =>
+            .then((updatedPerson) => {
               setPersons(
                 persons.map((person) =>
                   person.id !== updatedPerson.id ? person : updatedPerson
                 )
-              )
-            )
+              );
+              generateNotification({
+                message: `Updated ${newName}`,
+                type: "success",
+              });
+              setNewNumber("");
+              setNewName("");
+            })
             .catch((error) => {
-              alert("Error updating info");
+              if (error.response.status === 404)
+                generateNotification({
+                  message: `Information of ${newName} has already been removed from server`,
+                  type: "error",
+                });
             });
         }
       } else {
@@ -66,11 +86,19 @@ const App = () => {
           .create(newPerson)
           .then((newPersonResponse) => {
             setPersons(persons.concat(newPersonResponse));
+            generateNotification({
+              message: `Added ${newName}`,
+              type: "success",
+            });
             setNewName("");
             setNewNumber("");
           })
           .catch((error) => {
-            alert("Error adding a new entry");
+            if (error.response.status === 404)
+              generateNotification({
+                message: `Information of ${newName} has already been removed from server`,
+                type: "error",
+              });
           });
       }
     }
@@ -85,13 +113,18 @@ const App = () => {
         }
       })
       .catch((error) => {
-        alert("Error deleting the entry");
+        if (error.response.status === 404)
+          generateNotification({
+            message: `Information has already been removed from server`,
+            type: "error",
+          });
       });
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
       <Filter filter={filter} setFilter={setFilter} />
       <PersonForm
         newName={newName}
