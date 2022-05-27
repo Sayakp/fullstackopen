@@ -108,7 +108,7 @@ const App = () => {
     phonebookService
       .deletePerson(id)
       .then((responseStatus) => {
-        if (responseStatus === 200) {
+        if (responseStatus === 204) {
           setPersons(persons.filter((person) => person.id !== id));
         }
       })
