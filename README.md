@@ -1,4 +1,5 @@
 # fullstackopen
 
 Main project for the fullstackopen course.
-https://fullstackopen.com/
+
+https://fullstackopen.com/en/
