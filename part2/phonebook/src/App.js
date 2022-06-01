@@ -69,11 +69,17 @@ const App = () => {
               setNewName("");
             })
             .catch((error) => {
-              if (error.response.status === 404)
+              if (error.response.status === 404) {
                 generateNotification({
                   message: `Information of ${newName} has already been removed from server`,
                   type: "error",
                 });
+              } else if (error.response.status === 400) {
+                generateNotification({
+                  message: error.response.data.error,
+                  type: "error",
+                });
+              }
             });
         }
       } else {
@@ -94,11 +100,17 @@ const App = () => {
             setNewNumber("");
           })
           .catch((error) => {
-            if (error.response.status === 404)
+            if (error.response.status === 404) {
               generateNotification({
                 message: `Information of ${newName} has already been removed from server`,
                 type: "error",
               });
+            } else if (error.response.status === 400) {
+              generateNotification({
+                message: error.response.data.error,
+                type: "error",
+              });
+            }
           });
       }
     }
