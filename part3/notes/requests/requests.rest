@@ -17,7 +17,7 @@ PUT http://localhost:3001/api/notes/628ea6768ae428f54d11c35e
 Content-Type: application/json
 
 {
-  "content": "Upd",
+  "content": "Up3d",
   "important": true
 }
 

@@ -7,14 +7,41 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-  const body = request.body
-  if (body.likes === undefined) body.likes = 0
-  if (body.title === undefined && body.url === undefined) {
+  let { author, url, likes, title } = request.body
+  if (likes === undefined)likes = 0
+  if (title === undefined && url === undefined) {
     response.status(400).end()
   } else {
-    const blog = new Blog(body)
+    const blog = new Blog({
+      likes: likes,
+      title: title,
+      url: url,
+      author: author
+    })
     const savedBlog = await blog.save()
     response.status(201).json(savedBlog)
+  }
+})
+
+blogsRouter.delete('/:id', async (request, response) => {
+  await Blog.findByIdAndDelete(request.params.id)
+  response.status(204).end()
+})
+
+blogsRouter.put('/:id', async (request, response) => {
+  let { author, url, likes, title } = request.body
+  if (likes === undefined)likes = 0
+  if (title === undefined && url === undefined) {
+    response.status(400).end()
+  } else {
+    const newBlog = {
+      likes: likes,
+      title: title,
+      url: url,
+      author: author
+    }
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, newBlog, { new: true })
+    response.json(updatedBlog)
   }
 })
 

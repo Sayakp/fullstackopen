@@ -35,10 +35,10 @@ notesRouter.delete('/:id', async (request, response) => {
 notesRouter.put('/:id', (request, response, next) => {
   const { content, important } = request.body
 
-  const note = new Note({
+  const note = {
     content: content,
     important: important,
-  })
+  }
 
   Note.findByIdAndUpdate(request.params.id, note, { new: true })
     .then((updatedNote) => {
