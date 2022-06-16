@@ -1,5 +1,6 @@
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYWE5NWVjMjY3NWNmYzRkZjdkMTBlOCIsInVzZXJuYW1lIjoiZGFuaWVsMiIsImlhdCI6MTY1NTM0NjcxMCwiZXhwIjoxNjU1MzY0NzEwfQ.zPN6VokBrjuLUII_RfRuQp08_a_vWyu9g_VTEJaN9-Q
 
 {
   "title": "Blog title",
@@ -23,4 +24,27 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3003/api/blogs/629fd80fc3632d3cd9382900
+DELETE http://localhost:3003/api/blogs/62aa96272675cfc4df7d10ef
+Authorization: bearer
+
+###
+GET http://localhost:3003/api/users
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "daniel2",
+  "name": "dap",
+  "password": "clt322*"
+}
+
+###
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "daniel2",
+  "password":"clt322*"
+}

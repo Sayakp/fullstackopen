@@ -1,14 +1,15 @@
 GET http://localhost:3001/api/notes
 
 ###
-DELETE http://localhost:3001/api/notes/628c4e262e150663455b0b67
+DELETE http://localhost:3001/api/notes/628ea6768ae428f54d11c35e
 
 ###
-POST https://salty-hamlet-24205.herokuapp.com/api/notes
+POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: bearer xxxxx
 
 {
-  "content": "Hi",
+  "content": "Hi1234",
   "important": false
 }
 
@@ -21,3 +22,24 @@ Content-Type: application/json
   "important": true
 }
 
+###
+POST http://localhost:3001/api/users/
+Content-Type: application/json
+
+{
+  "username": "root2233334",
+  "name": "Superuser2323343",
+  "password": "salainen"
+}
+
+###
+GET http://localhost:3001/api/users/
+
+###
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password": "salainen"
+}

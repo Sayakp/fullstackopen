@@ -1,16 +1,22 @@
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const app = require('../app')
 const supertest = require('supertest')
 const helpers = require('./test_helper')
-const { log } = require('nodemon/lib/utils')
+const jwt = require('jsonwebtoken')
 
 const api = supertest(app)
 
 
 beforeEach(async () => {
+  await User.deleteMany({})
+  await User.insertMany(helpers.initialUsers)
+  const users = await helpers.usersInDb()
+
+  const initialBlogs = helpers.initialBlogs.map(n => ({ ...n, user: users[0].id }))
   await Blog.deleteMany({})
-  await Blog.insertMany(helpers.initialBlogs)
+  await Blog.insertMany(initialBlogs)
 })
 
 describe('when there is initially some blogs saved', () => {
@@ -48,16 +54,19 @@ describe('when there is initially some blogs saved', () => {
 })
 
 describe('addition of a new blog', () => {
+
   test('a valid blog can be added', async () => {
+    const tokens = await helpers.generateTokens()
     const newBlog = {
       title: 'New blog title',
       author: 'Daniel',
       url: 'www.google.com',
-      likes: 5,
+      likes: 5
     }
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${tokens[0]}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -70,6 +79,7 @@ describe('addition of a new blog', () => {
   })
 
   test('new blog likes default to 0 if not specified', async () => {
+    const tokens = await helpers.generateTokens()
     const newBlog = {
       title: 'New Blog title',
       author: 'Daniel',
@@ -78,6 +88,7 @@ describe('addition of a new blog', () => {
 
     const savedBlog = await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${tokens[0]}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -85,11 +96,26 @@ describe('addition of a new blog', () => {
   })
 
   test('return (400 Bad Request) if a new blog is missing title and url', async () => {
+    const tokens = await helpers.generateTokens()
     const newBlog = {
       author: 'Daniel',
       likes: 5,
     }
-    await api.post('/api/blogs').send(newBlog).expect(400)
+    await api.post('/api/blogs')
+      .set('Authorization', `bearer ${tokens[0]}`)
+      .send(newBlog).expect(400)
+  })
+
+  test('return (401 unauthorized) if there is no token present', async () => {
+    const newBlog = {
+      title: 'New Blog Title',
+      author: 'Daniel',
+      url: 'www.google.com'
+    }
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
   })
 
 })
@@ -98,7 +124,18 @@ describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
     const blogsAtStart = await helpers.blogsInDb()
     const blogToDelete = blogsAtStart[0]
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+    const blogToDeleteUser = await User.findById(blogToDelete.user)
+
+    const tokenPayload = {
+      id: blogToDeleteUser.id,
+      username: blogToDeleteUser.username
+    }
+    const token = jwt.sign(tokenPayload, process.env.SECRET)
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `bearer ${token}`)
+      .expect(204)
 
     const blogsAfterDelete = await helpers.blogsInDb()
     expect(blogsAfterDelete).toHaveLength(blogsAtStart.length-1)
