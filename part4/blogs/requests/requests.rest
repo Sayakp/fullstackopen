@@ -1,19 +1,18 @@
 POST http://localhost:3003/api/blogs/
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYWE5NWVjMjY3NWNmYzRkZjdkMTBlOCIsInVzZXJuYW1lIjoiZGFuaWVsMiIsImlhdCI6MTY1NTM0NjcxMCwiZXhwIjoxNjU1MzY0NzEwfQ.zPN6VokBrjuLUII_RfRuQp08_a_vWyu9g_VTEJaN9-Q
+Authorization: bearer "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyY2RmMzVmMDE0MjQwYmM0MzM5OGE5YyIsInVzZXJuYW1lIjoic2FtdWVsIiwiaWF0IjoxNjU3NjY0MzU1LCJleHAiOjE2NTc2ODIzNTV9.vS4HiQHLlIpsMlz1oxL_mmmI_XFLoM2g7MOmwXQEato"
 
 {
-  "title": "Blog title",
-  "author": "Daniel",
-  "url": "www.google.com",
-  "likes": 5
+  "title": "12345",
+  "author": "1234",
+  "url": "gg"
 }
 
 ###
 GET http://localhost:3003/api/blogs/
 
 ###
-PUT http://localhost:3003/api/blogs/629fd808c3632d3cd93828fe
+PUT http://localhost:3003/api/blogs/62cdf39c014240bc43398aa3
 Content-Type: application/json
 
 {
@@ -24,8 +23,8 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3003/api/blogs/62aa96272675cfc4df7d10ef
-Authorization: bearer
+DELETE http://localhost:3003/api/blogs/62cdea41ff7b50788884062b
+Authorization: bearer 
 
 ###
 GET http://localhost:3003/api/users
@@ -35,9 +34,9 @@ POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-  "username": "daniel2",
-  "name": "dap",
-  "password": "clt322*"
+  "username": "samuel",
+  "name": "sam",
+  "password": "qw1234"
 }
 
 ###
@@ -45,6 +44,6 @@ POST http://localhost:3003/api/login
 Content-Type: application/json
 
 {
-  "username": "daniel2",
-  "password":"clt322*"
+  "username": "samuel",
+  "password":"qw1234"
 }
